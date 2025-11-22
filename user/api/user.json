@@ -1,0 +1,1536 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "用户权限管理系统API",
+    "description": "系统用户、角色、权限管理接口",
+    "version": "v1.0"
+  },
+  "host": "localhost:8889",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "summary": "用户登录",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 用户登录",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginReq"
+            }
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/permission/create": {
+      "post": {
+        "summary": "创建权限",
+        "operationId": "CreatePermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 创建权限",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePermissionReq"
+            }
+          }
+        ],
+        "tags": [
+          "permission"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/permission/detail/{permission_id}": {
+      "get": {
+        "summary": "获取权限详情",
+        "operationId": "GetPermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "permission_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "permission"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/permission/list": {
+      "get": {
+        "summary": "获取权限列表",
+        "operationId": "ListPermissions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "10"
+          },
+          {
+            "name": "permission_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "permission_type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "permission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/permission/remove/{permission_id}": {
+      "delete": {
+        "summary": "删除权限",
+        "operationId": "DeletePermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "permission_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 删除权限",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeletePermissionReq"
+            }
+          }
+        ],
+        "tags": [
+          "permission"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/permission/tree": {
+      "get": {
+        "summary": "获取权限树",
+        "operationId": "GetPermissionTree",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "permission_type",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "permission"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/permission/update/{permission_id}": {
+      "put": {
+        "summary": "更新权限信息",
+        "operationId": "UpdatePermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "permission_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 更新权限",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdatePermissionReq"
+            }
+          }
+        ],
+        "tags": [
+          "permission"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/role/create": {
+      "post": {
+        "summary": "创建角色",
+        "operationId": "CreateRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 创建角色",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateRoleReq"
+            }
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/role/detail/{role_id}": {
+      "get": {
+        "summary": "获取角色详情",
+        "operationId": "GetRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/role/list": {
+      "get": {
+        "summary": "获取角色列表",
+        "operationId": "ListRoles",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "10"
+          },
+          {
+            "name": "role_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/role/permissions/{role_id}": {
+      "get": {
+        "summary": "获取角色权限列表",
+        "operationId": "GetRolePermissions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "分配角色权限",
+        "operationId": "AssignRolePermissions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 分配角色权限",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AssignRolePermissionsReq"
+            }
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/role/remove/{role_id}": {
+      "delete": {
+        "summary": "删除角色",
+        "operationId": "DeleteRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 删除角色",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteRoleReq"
+            }
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/role/update/{role_id}": {
+      "put": {
+        "summary": "更新角色信息",
+        "operationId": "UpdateRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "role_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 更新角色",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateRoleReq"
+            }
+          }
+        ],
+        "tags": [
+          "role"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/create": {
+      "post": {
+        "summary": "创建用户",
+        "operationId": "CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 创建用户",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateUserReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/current": {
+      "get": {
+        "summary": "获取当前用户信息",
+        "operationId": "GetCurrentUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/current/permissions": {
+      "get": {
+        "summary": "获取当前用户权限",
+        "operationId": "GetCurrentUserPermissions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/detail/{user_id}": {
+      "get": {
+        "summary": "获取用户详情",
+        "operationId": "GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/list": {
+      "get": {
+        "summary": "获取用户列表",
+        "operationId": "ListUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int64",
+            "default": "10"
+          },
+          {
+            "name": "user_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "real_name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "role_id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "user_status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "department",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/password": {
+      "put": {
+        "summary": "修改当前用户密码",
+        "operationId": "ChangePassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 修改密码",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ChangePasswordReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/remove/{user_id}": {
+      "delete": {
+        "summary": "删除用户",
+        "operationId": "DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 删除用户",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DeleteUserReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/reset_password/{user_id}": {
+      "put": {
+        "summary": "重置用户密码",
+        "operationId": "ResetPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 重置密码",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResetPasswordReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/user/update/{user_id}": {
+      "put": {
+        "summary": "更新用户信息",
+        "operationId": "UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "description": " 更新用户",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateUserReq"
+            }
+          }
+        ],
+        "tags": [
+          "user"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AssignRolePermissionsReq": {
+      "type": "object",
+      "properties": {
+        "permission_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "AssignRolePermissionsReq",
+      "required": [
+        "permission_ids"
+      ]
+    },
+    "ChangePasswordReq": {
+      "type": "object",
+      "properties": {
+        "old_password": {
+          "type": "string"
+        },
+        "new_password": {
+          "type": "string"
+        }
+      },
+      "title": "ChangePasswordReq",
+      "required": [
+        "old_password",
+        "new_password"
+      ]
+    },
+    "CreatePermissionReq": {
+      "type": "object",
+      "properties": {
+        "permission_id": {
+          "type": "string"
+        },
+        "permission_name": {
+          "type": "string"
+        },
+        "permission_code": {
+          "type": "string"
+        },
+        "permission_type": {
+          "type": "string"
+        },
+        "parent_permission_id": {
+          "type": "string"
+        }
+      },
+      "title": "CreatePermissionReq",
+      "required": [
+        "permission_id",
+        "permission_name",
+        "permission_code",
+        "permission_type"
+      ]
+    },
+    "CreatePermissionResp": {
+      "type": "object",
+      "properties": {
+        "permission_id": {
+          "type": "string"
+        }
+      },
+      "title": "CreatePermissionResp",
+      "required": [
+        "permission_id"
+      ]
+    },
+    "CreateRoleReq": {
+      "type": "object",
+      "properties": {
+        "role_name": {
+          "type": "string"
+        },
+        "role_desc": {
+          "type": "string"
+        }
+      },
+      "title": "CreateRoleReq",
+      "required": [
+        "role_name"
+      ]
+    },
+    "CreateRoleResp": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "type": "string"
+        }
+      },
+      "title": "CreateRoleResp",
+      "required": [
+        "role_id"
+      ]
+    },
+    "CreateUserReq": {
+      "type": "object",
+      "properties": {
+        "user_name": {
+          "type": "string"
+        },
+        "real_name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "contact_phone": {
+          "type": "string"
+        },
+        "user_status": {
+          "type": "string"
+        },
+        "password_expire_time": {
+          "type": "string"
+        }
+      },
+      "title": "CreateUserReq",
+      "required": [
+        "user_name",
+        "real_name",
+        "password",
+        "role_id",
+        "user_status"
+      ]
+    },
+    "CreateUserResp": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        }
+      },
+      "title": "CreateUserResp",
+      "required": [
+        "user_id"
+      ]
+    },
+    "DeletePermissionReq": {
+      "type": "object",
+      "title": "DeletePermissionReq"
+    },
+    "DeleteRoleReq": {
+      "type": "object",
+      "title": "DeleteRoleReq"
+    },
+    "DeleteUserReq": {
+      "type": "object",
+      "title": "DeleteUserReq"
+    },
+    "GetCurrentUserPermissionsResp": {
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PermissionInfo"
+          }
+        }
+      },
+      "title": "GetCurrentUserPermissionsResp",
+      "required": [
+        "permissions"
+      ]
+    },
+    "GetPermissionReq": {
+      "type": "object",
+      "title": "GetPermissionReq"
+    },
+    "GetPermissionResp": {
+      "type": "object",
+      "properties": {
+        "permission_info": {
+          "$ref": "#/definitions/PermissionInfo"
+        }
+      },
+      "title": "GetPermissionResp",
+      "required": [
+        "permission_info"
+      ]
+    },
+    "GetPermissionTreeReq": {
+      "type": "object",
+      "properties": {
+        "permission_type": {
+          "type": "string"
+        }
+      },
+      "title": "GetPermissionTreeReq"
+    },
+    "GetPermissionTreeResp": {
+      "type": "object",
+      "properties": {
+        "tree": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PermissionInfo"
+          }
+        }
+      },
+      "title": "GetPermissionTreeResp",
+      "required": [
+        "tree"
+      ]
+    },
+    "GetRolePermissionsReq": {
+      "type": "object",
+      "title": "GetRolePermissionsReq"
+    },
+    "GetRolePermissionsResp": {
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PermissionInfo"
+          }
+        }
+      },
+      "title": "GetRolePermissionsResp",
+      "required": [
+        "permissions"
+      ]
+    },
+    "GetRoleReq": {
+      "type": "object",
+      "title": "GetRoleReq"
+    },
+    "GetRoleResp": {
+      "type": "object",
+      "properties": {
+        "role_info": {
+          "$ref": "#/definitions/RoleInfo"
+        }
+      },
+      "title": "GetRoleResp",
+      "required": [
+        "role_info"
+      ]
+    },
+    "GetUserReq": {
+      "type": "object",
+      "title": "GetUserReq"
+    },
+    "GetUserResp": {
+      "type": "object",
+      "properties": {
+        "user_info": {
+          "$ref": "#/definitions/UserInfo"
+        }
+      },
+      "title": "GetUserResp",
+      "required": [
+        "user_info"
+      ]
+    },
+    "ListPermissionsReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "10"
+        },
+        "permission_name": {
+          "type": "string"
+        },
+        "permission_type": {
+          "type": "string"
+        }
+      },
+      "title": "ListPermissionsReq",
+      "required": [
+        "page",
+        "page_size"
+      ]
+    },
+    "ListPermissionsResp": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PermissionInfo"
+          }
+        }
+      },
+      "title": "ListPermissionsResp",
+      "required": [
+        "total",
+        "list"
+      ]
+    },
+    "ListRolesReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "10"
+        },
+        "role_name": {
+          "type": "string"
+        }
+      },
+      "title": "ListRolesReq",
+      "required": [
+        "page",
+        "page_size"
+      ]
+    },
+    "ListRolesResp": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RoleInfo"
+          }
+        }
+      },
+      "title": "ListRolesResp",
+      "required": [
+        "total",
+        "list"
+      ]
+    },
+    "ListUsersReq": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "page_size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "10"
+        },
+        "user_name": {
+          "type": "string"
+        },
+        "real_name": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "string"
+        },
+        "user_status": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        }
+      },
+      "title": "ListUsersReq",
+      "required": [
+        "page",
+        "page_size"
+      ]
+    },
+    "ListUsersResp": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "list": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserInfo"
+          }
+        }
+      },
+      "title": "ListUsersResp",
+      "required": [
+        "total",
+        "list"
+      ]
+    },
+    "LoginReq": {
+      "type": "object",
+      "properties": {
+        "user_name": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "LoginReq",
+      "required": [
+        "user_name",
+        "password"
+      ]
+    },
+    "LoginResp": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "refresh_token": {
+          "type": "string"
+        },
+        "user_info": {
+          "$ref": "#/definitions/UserInfo"
+        }
+      },
+      "title": "LoginResp",
+      "required": [
+        "token",
+        "user_info"
+      ]
+    },
+    "PermissionInfo": {
+      "type": "object",
+      "properties": {
+        "permission_id": {
+          "type": "string"
+        },
+        "permission_name": {
+          "type": "string"
+        },
+        "permission_code": {
+          "type": "string"
+        },
+        "permission_type": {
+          "type": "string"
+        },
+        "parent_permission_id": {
+          "type": "string"
+        },
+        "create_time": {
+          "type": "string"
+        },
+        "update_time": {
+          "type": "string"
+        }
+      },
+      "title": "PermissionInfo",
+      "required": [
+        "permission_id",
+        "permission_name",
+        "permission_code",
+        "permission_type",
+        "create_time",
+        "update_time"
+      ]
+    },
+    "ResetPasswordReq": {
+      "type": "object",
+      "properties": {
+        "new_password": {
+          "type": "string"
+        }
+      },
+      "title": "ResetPasswordReq",
+      "required": [
+        "new_password"
+      ]
+    },
+    "Response": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "msg": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "title": "Response",
+      "required": [
+        "code",
+        "msg",
+        "data"
+      ]
+    },
+    "RoleInfo": {
+      "type": "object",
+      "properties": {
+        "role_id": {
+          "type": "string"
+        },
+        "role_name": {
+          "type": "string"
+        },
+        "role_desc": {
+          "type": "string"
+        },
+        "create_time": {
+          "type": "string"
+        },
+        "update_time": {
+          "type": "string"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PermissionInfo"
+          },
+          "description": " 权限ID列表"
+        }
+      },
+      "title": "RoleInfo",
+      "required": [
+        "role_id",
+        "role_name",
+        "create_time",
+        "update_time"
+      ]
+    },
+    "UpdatePermissionReq": {
+      "type": "object",
+      "properties": {
+        "permission_name": {
+          "type": "string"
+        },
+        "permission_code": {
+          "type": "string"
+        },
+        "permission_type": {
+          "type": "string"
+        },
+        "parent_permission_id": {
+          "type": "string"
+        }
+      },
+      "title": "UpdatePermissionReq"
+    },
+    "UpdateRoleReq": {
+      "type": "object",
+      "properties": {
+        "role_name": {
+          "type": "string"
+        },
+        "role_desc": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateRoleReq"
+    },
+    "UpdateUserReq": {
+      "type": "object",
+      "properties": {
+        "real_name": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "contact_phone": {
+          "type": "string"
+        },
+        "user_status": {
+          "type": "string"
+        },
+        "password_expire_time": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateUserReq"
+    },
+    "UserInfo": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "user_name": {
+          "type": "string"
+        },
+        "real_name": {
+          "type": "string"
+        },
+        "role_id": {
+          "type": "string"
+        },
+        "role_name": {
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "contact_phone": {
+          "type": "string"
+        },
+        "user_status": {
+          "type": "string"
+        },
+        "last_login_time": {
+          "type": "string"
+        },
+        "password_expire_time": {
+          "type": "string"
+        },
+        "create_time": {
+          "type": "string"
+        },
+        "update_time": {
+          "type": "string"
+        }
+      },
+      "title": "UserInfo",
+      "required": [
+        "user_id",
+        "user_name",
+        "real_name",
+        "role_id",
+        "user_status",
+        "password_expire_time",
+        "create_time",
+        "update_time"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+Name: user-api
+Host: 127.0.0.1
+Port: 8889
+
+Auth:
+  AccessSecret: wmss1234
+  AccessExpire: 8640000000  # 24小时
+
+# MySQL 数据库配置
+Mysql:
+  DataSource: root:darling1224@tcp(127.0.0.1:3306)/wmss?charset=utf8mb4&parseTime=true&loc=Local
+
+# Redis 缓存配置（如果使用 -cache=true 生成的 Model）
+#CacheRedis:
+#  - Host: 127.0.0.1:6379
+#    Type: node
+#    Pass: ""
+
+Log:
+  ServiceName: user-api
+  Mode: console
+  Level: error  # 从info改为error，只记录错误级别日志
+  Path: logs
+  KeepDays: 7
+  MaxSize: 128
