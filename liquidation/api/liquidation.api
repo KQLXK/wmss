@@ -1,0 +1,278 @@
+// liquidation.api - 理财销售系统清算模块
+type (
+	// 基础响应结构
+	BaseResponse {
+		Code    int64       `json:"code"`
+		Message string      `json:"message"`
+		Data    interface{} `json:"data,omitempty"`
+	}
+	// 分页请求
+	PageRequest {
+		Page     int64 `form:"page,optional,default=1"`
+		PageSize int64 `form:"size,optional,default=20"`
+	}
+	// 交易日初始化请求
+	TradingDayInitRequest {
+		OperatorId  string `json:"operatorId"`
+		ForceUpdate bool   `json:"forceUpdate,optional"`
+		TargetDate  string `json:"targetDate,optional"`
+	}
+	// 交易日初始化响应
+	TradingDayInitResponse {
+		PreviousTradingDay string `json:"previousTradingDay"`
+		CurrentTradingDay  string `json:"currentTradingDay"`
+		NextTradingDay     string `json:"nextTradingDay"`
+		InitTime           string `json:"initTime"`
+		LogId              int64  `json:"logId"`
+	}
+	// 交易日信息响应
+	TradingDayResponse {
+		TradingDay         string `json:"tradingDay"`
+		IsWorkday          bool   `json:"isWorkday"`
+		WorkdayType        string `json:"workdayType"`
+		PreviousTradingDay string `json:"previousTradingDay"`
+		NextTradingDay     string `json:"nextTradingDay"`
+	}
+	// 行情更新请求
+	QuotationUpdateRequest {
+		OperatorId    string   `json:"operatorId"`
+		QuotationDate string   `json:"quotationDate,optional"`
+		ProductIds    []string `json:"productIds,optional"`
+		UpdateMethod  string   `json:"updateMethod"`
+	}
+	// 行情更新响应
+	QuotationUpdateResponse {
+		QuotationDate  string   `json:"quotationDate"`
+		UpdatedCount   int64    `json:"updatedCount"`
+		FailedCount    int64    `json:"failedCount"`
+		FailedProducts []string `json:"failedProducts"`
+		LogId          int64    `json:"logId"`
+	}
+	// 净值查询请求
+	NetValueQueryRequest {
+		ProductId string `form:"productId,optional"`
+		Page      int64  `form:"page,optional,default=1"`
+		Size      int64  `form:"size,optional,default=20"`
+		StartDate string `form:"startDate,optional"`
+		EndDate   string `form:"endDate,optional"`
+	}
+	// 净值记录
+	NetValueRecord {
+		ProductId          string  `json:"productId"`
+		ProductName        string  `json:"productName"`
+		StatDate           string  `json:"statDate"`
+		UnitNetValue       float64 `json:"unitNetValue"`
+		CumulativeNetValue float64 `json:"cumulativeNetValue"`
+		DailyGrowthRate    float64 `json:"dailyGrowthRate"`
+		PreviousNetValue   float64 `json:"previousNetValue"`
+		GrowthAmount       float64 `json:"growthAmount"`
+	}
+	// 分页净值响应
+	NetValuePageResponse {
+		Total   int64            `json:"total"`
+		Records []NetValueRecord `json:"records"`
+	}
+	// 交易确认请求
+	TransactionConfirmRequest {
+		OperatorId       string   `json:"operatorId"`
+		ConfirmationDate string   `json:"confirmationDate,optional"`
+		ApplicationType  string   `json:"applicationType"`
+		ApplicationIds   []string `json:"applicationIds,optional"`
+		BatchSize        int64    `json:"batchSize,optional,default=100"`
+	}
+	// 交易确认响应
+	TransactionConfirmResponse {
+		ConfirmationDate   string                    `json:"confirmationDate"`
+		TotalApplications  int64                     `json:"totalApplications"`
+		SuccessCount       int64                     `json:"successCount"`
+		FailedCount        int64                     `json:"failedCount"`
+		ConfirmedAmount    float64                   `json:"confirmedAmount"`
+		ConfirmedShares    float64                   `json:"confirmedShares"`
+		TotalFees          float64                   `json:"totalFees"`
+		ConfirmationIds    []string                  `json:"confirmationIds"`
+		LogId              int64                     `json:"logId"`
+		FailedApplications []FailedApplicationDetail `json:"failedApplications"`
+	}
+	// 失败申请详情
+	FailedApplicationDetail {
+		ApplicationId string `json:"applicationId"`
+		FailureReason string `json:"failureReason"`
+		CustomerId    string `json:"customerId"`
+		ProductId     string `json:"productId"`
+	}
+	// 待确认交易查询请求
+	PendingTransactionRequest {
+		ApplicationDate string `form:"applicationDate"`
+		ApplicationType string `form:"applicationType,optional"`
+		ProductId       string `form:"productId,optional"`
+		CustomerId      string `form:"customerId,optional"`
+		Page            int64  `form:"page,optional,default=1"`
+		Size            int64  `form:"size,optional,default=50"`
+	}
+	// 待确认交易记录
+	PendingTransactionRecord {
+		ApplicationId     string  `json:"applicationId"`
+		ApplicationType   string  `json:"applicationType"`
+		CustomerId        string  `json:"customerId"`
+		CustomerName      string  `json:"customerName"`
+		ProductId         string  `json:"productId"`
+		ProductName       string  `json:"productName"`
+		ApplicationAmount float64 `json:"applicationAmount,optional"`
+		ApplicationShares float64 `json:"applicationShares,optional"`
+		ApplicationDate   string  `json:"applicationDate"`
+		ApplicationStatus string  `json:"applicationStatus"`
+		RiskLevel         string  `json:"riskLevel"`
+		ProductRiskLevel  string  `json:"productRiskLevel"`
+		RiskMatch         bool    `json:"riskMatch"`
+	}
+	// 分页待确认交易响应
+	PendingTransactionResponse {
+		Total   int64                      `json:"total"`
+		Records []PendingTransactionRecord `json:"records"`
+	}
+	// 清算回退请求
+	LiquidationRollbackRequest {
+		OperatorId      string   `json:"operatorId"`
+		LiquidationDate string   `json:"liquidationDate"`
+		RollbackType    string   `json:"rollbackType"`
+		RollbackSteps   []string `json:"rollbackSteps,optional"`
+		Reason          string   `json:"reason"`
+		Password        string   `json:"password"`
+	}
+	// 受影响的记录
+	AffectedRecords {
+		Quotations    int64 `json:"quotations"`
+		Confirmations int64 `json:"confirmations"`
+		Positions     int64 `json:"positions"`
+		Applications  int64 `json:"applications"`
+	}
+	// 清算回退响应
+	LiquidationRollbackResponse {
+		RollbackId      string          `json:"rollbackId"`
+		LiquidationDate string          `json:"liquidationDate"`
+		RollbackTime    string          `json:"rollbackTime"`
+		OperatorId      string          `json:"operatorId"`
+		RollbackReason  string          `json:"rollbackReason"`
+		AffectedRecords AffectedRecords `json:"affectedRecords"`
+		RollbackLogId   int64           `json:"rollbackLogId"`
+	}
+	// 清算日志查询请求
+	LiquidationLogRequest {
+		LiquidationDate string `form:"liquidationDate,optional"`
+		LiquidationStep string `form:"liquidationStep,optional"`
+		StepStatus      string `form:"stepStatus,optional"`
+		StartTime       string `form:"startTime,optional"`
+		EndTime         string `form:"endTime,optional"`
+		OperatorId      string `form:"operatorId,optional"`
+		Page            int64  `form:"page,optional,default=1"`
+		Size            int64  `form:"size,optional,default=50"`
+	}
+	// 清算日志记录
+	LiquidationLogRecord {
+		LogId           int64       `json:"logId"`
+		LiquidationDate string      `json:"liquidationDate"`
+		LiquidationStep string      `json:"liquidationStep"`
+		StepStatus      string      `json:"stepStatus"`
+		StartTime       string      `json:"startTime,optional"`
+		EndTime         string      `json:"endTime,optional"`
+		Duration        int64       `json:"duration,optional"`
+		ProcessedCount  int64       `json:"processedCount"`
+		FailureCount    int64       `json:"failureCount"`
+		FailureDetail   interface{} `json:"failureDetail,optional"`
+		OperatorId      string      `json:"operatorId"`
+		CreateTime      string      `json:"createTime"`
+		StepDetails     interface{} `json:"stepDetails,optional"`
+	}
+	// 分页清算日志响应
+	LiquidationLogResponse {
+		Total   int64                  `json:"total"`
+		Records []LiquidationLogRecord `json:"records"`
+	}
+	// 清算步骤统计
+	LiquidationStepStatistics {
+		LiquidationDate string                `json:"liquidationDate"`
+		TotalSteps      int64                 `json:"totalSteps"`
+		CompletedSteps  int64                 `json:"completedSteps"`
+		PendingSteps    int64                 `json:"pendingSteps"`
+		FailedSteps     int64                 `json:"failedSteps"`
+		Steps           []LiquidationStepItem `json:"steps"`
+	}
+	// 清算步骤项
+	LiquidationStepItem {
+		Step      string `json:"step"`
+		Status    string `json:"status"`
+		StartTime string `json:"startTime,optional"`
+		EndTime   string `json:"endTime,optional"`
+		Duration  string `json:"duration,optional"`
+	}
+	// 重试失败交易请求
+	RetryFailedTransactionRequest {
+		OperatorId      string   `json:"operatorId"`
+		ConfirmationIds []string `json:"confirmationIds"`
+		ForceRetry      bool     `json:"forceRetry,optional"`
+	}
+	// 失败交易详情
+	FailedTransactionDetail {
+		ConfirmationId string `json:"confirmationId"`
+		Reason         string `json:"reason"`
+	}
+	// 重试失败交易响应
+	RetryFailedTransactionResponse {
+		TotalRetry    int64                     `json:"totalRetry"`
+		SuccessCount  int64                     `json:"successCount"`
+		FailedCount   int64                     `json:"failedCount"`
+		SuccessIds    []string                  `json:"successIds"`
+		FailedDetails []FailedTransactionDetail `json:"failedDetails"`
+	}
+)
+
+@server (
+	prefix: /api
+	jwt:    Auth
+)
+service liquidation-api {
+	// 1. 交易日初始化接口
+	@handler TradingDayInit
+	post /liquidation/trading-day/init (TradingDayInitRequest) returns (BaseResponse)
+
+	// 2. 获取当前交易日接口
+	@handler GetCurrentTradingDay
+	get /liquidation/trading-day/current returns (BaseResponse)
+
+	// 3. 行情更新接口
+	@handler QuotationUpdate
+	post /liquidation/quotation/update (QuotationUpdateRequest) returns (BaseResponse)
+
+	// 4. 查询最新净值接口
+	@handler GetLatestNetValues
+	get /liquidation/quotation/latest (NetValueQueryRequest) returns (BaseResponse)
+
+	// 5. 交易确认处理接口
+	@handler TransactionConfirm
+	post /liquidation/transaction/confirm (TransactionConfirmRequest) returns (BaseResponse)
+
+	// 6. 查询待确认交易接口
+	@handler GetPendingTransactions
+	get /liquidation/transaction/pending (PendingTransactionRequest) returns (BaseResponse)
+
+	// 7. 清算回退接口
+	@handler LiquidationRollback
+	post /liquidation/rollback (LiquidationRollbackRequest) returns (BaseResponse)
+
+	// 8. 查询清算日志接口
+	@handler GetLiquidationLogs
+	get /liquidation/logs (LiquidationLogRequest) returns (BaseResponse)
+
+	// 9. 获取清算步骤统计接口
+	@handler GetLiquidationStepStatistics
+	get /liquidation/steps/statistics returns (BaseResponse)
+
+	// 10. 重试失败交易接口
+	@handler RetryFailedTransactions
+	post /liquidation/transaction/retry (RetryFailedTransactionRequest) returns (BaseResponse)
+
+	// 11. 健康检查接口
+	@handler HealthCheck
+	get /health returns (BaseResponse)
+}
+

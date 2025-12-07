@@ -1,0 +1,19 @@
+Name: liquidation-api
+Host: 127.0.0.1
+Port: 8890
+
+Auth:
+  AccessSecret: wmss1234
+  AccessExpire: 8640000000  # 24小时
+
+# MySQL 数据库配置
+Mysql:
+  DataSource: root:yuchao123@tcp(127.0.0.1:3306)/wmss?charset=utf8mb4&parseTime=true&loc=Local
+
+Log:
+  ServiceName: liquidation-api
+  Mode: console
+  Level: info
+  Path: logs
+  KeepDays: 7
+  MaxSize: 128

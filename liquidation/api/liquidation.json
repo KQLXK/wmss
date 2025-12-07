@@ -1,0 +1,1299 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "",
+    "version": ""
+  },
+  "host": "localhost:8890",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "HealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/logs": {
+      "get": {
+        "operationId": "GetLiquidationLogs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "liquidationDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "liquidationStep",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "stepStatus",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "operatorId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "default": "50"
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/quotation/latest": {
+      "get": {
+        "operationId": "GetLatestNetValues",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "default": "20"
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/quotation/update": {
+      "post": {
+        "operationId": "QuotationUpdate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 行情更新请求",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/QuotationUpdateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/rollback": {
+      "post": {
+        "operationId": "LiquidationRollback",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 清算回退请求",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LiquidationRollbackRequest"
+            }
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/steps/statistics": {
+      "get": {
+        "operationId": "GetLiquidationStepStatistics",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/trading-day/current": {
+      "get": {
+        "operationId": "GetCurrentTradingDay",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/trading-day/init": {
+      "post": {
+        "operationId": "TradingDayInit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 交易日初始化请求",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TradingDayInitRequest"
+            }
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/transaction/confirm": {
+      "post": {
+        "operationId": "TransactionConfirm",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 交易确认请求",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TransactionConfirmRequest"
+            }
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/transaction/pending": {
+      "get": {
+        "operationId": "GetPendingTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "applicationDate",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "applicationType",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "default": "1"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64",
+            "default": "50"
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    },
+    "/api/liquidation/transaction/retry": {
+      "post": {
+        "operationId": "RetryFailedTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/BaseResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " 重试失败交易请求",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/RetryFailedTransactionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "liquidation-api"
+        ],
+        "security": [
+          {
+            "apiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AffectedRecords": {
+      "type": "object",
+      "properties": {
+        "quotations": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "confirmations": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "positions": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "applications": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "AffectedRecords",
+      "required": [
+        "quotations",
+        "confirmations",
+        "positions",
+        "applications"
+      ]
+    },
+    "BaseResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "title": "BaseResponse",
+      "required": [
+        "code",
+        "message"
+      ]
+    },
+    "FailedApplicationDetail": {
+      "type": "object",
+      "properties": {
+        "applicationId": {
+          "type": "string"
+        },
+        "failureReason": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        }
+      },
+      "title": "FailedApplicationDetail",
+      "required": [
+        "applicationId",
+        "failureReason",
+        "customerId",
+        "productId"
+      ]
+    },
+    "FailedTransactionDetail": {
+      "type": "object",
+      "properties": {
+        "confirmationId": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "title": "FailedTransactionDetail",
+      "required": [
+        "confirmationId",
+        "reason"
+      ]
+    },
+    "LiquidationLogRecord": {
+      "type": "object",
+      "properties": {
+        "logId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "liquidationDate": {
+          "type": "string"
+        },
+        "liquidationStep": {
+          "type": "string"
+        },
+        "stepStatus": {
+          "type": "string"
+        },
+        "startTime": {
+          "type": "string"
+        },
+        "endTime": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "processedCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failureCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failureDetail": {
+          "type": "object"
+        },
+        "operatorId": {
+          "type": "string"
+        },
+        "createTime": {
+          "type": "string"
+        },
+        "stepDetails": {
+          "type": "object"
+        }
+      },
+      "title": "LiquidationLogRecord",
+      "required": [
+        "logId",
+        "liquidationDate",
+        "liquidationStep",
+        "stepStatus",
+        "processedCount",
+        "failureCount",
+        "operatorId",
+        "createTime"
+      ]
+    },
+    "LiquidationLogRequest": {
+      "type": "object",
+      "properties": {
+        "liquidationDate": {
+          "type": "string"
+        },
+        "liquidationStep": {
+          "type": "string"
+        },
+        "stepStatus": {
+          "type": "string"
+        },
+        "startTime": {
+          "type": "string"
+        },
+        "endTime": {
+          "type": "string"
+        },
+        "operatorId": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "50"
+        }
+      },
+      "title": "LiquidationLogRequest"
+    },
+    "LiquidationLogResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LiquidationLogRecord"
+          }
+        }
+      },
+      "title": "LiquidationLogResponse",
+      "required": [
+        "total",
+        "records"
+      ]
+    },
+    "LiquidationRollbackRequest": {
+      "type": "object",
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "liquidationDate": {
+          "type": "string"
+        },
+        "rollbackType": {
+          "type": "string"
+        },
+        "rollbackSteps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "reason": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      },
+      "title": "LiquidationRollbackRequest",
+      "required": [
+        "operatorId",
+        "liquidationDate",
+        "rollbackType",
+        "reason",
+        "password"
+      ]
+    },
+    "LiquidationRollbackResponse": {
+      "type": "object",
+      "properties": {
+        "rollbackId": {
+          "type": "string"
+        },
+        "liquidationDate": {
+          "type": "string"
+        },
+        "rollbackTime": {
+          "type": "string"
+        },
+        "operatorId": {
+          "type": "string"
+        },
+        "rollbackReason": {
+          "type": "string"
+        },
+        "affectedRecords": {
+          "$ref": "#/definitions/AffectedRecords"
+        },
+        "rollbackLogId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "LiquidationRollbackResponse",
+      "required": [
+        "rollbackId",
+        "liquidationDate",
+        "rollbackTime",
+        "operatorId",
+        "rollbackReason",
+        "affectedRecords",
+        "rollbackLogId"
+      ]
+    },
+    "LiquidationStepItem": {
+      "type": "object",
+      "properties": {
+        "step": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "startTime": {
+          "type": "string"
+        },
+        "endTime": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "string"
+        }
+      },
+      "title": "LiquidationStepItem",
+      "required": [
+        "step",
+        "status"
+      ]
+    },
+    "LiquidationStepStatistics": {
+      "type": "object",
+      "properties": {
+        "liquidationDate": {
+          "type": "string"
+        },
+        "totalSteps": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "completedSteps": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "pendingSteps": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failedSteps": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LiquidationStepItem"
+          }
+        }
+      },
+      "title": "LiquidationStepStatistics",
+      "required": [
+        "liquidationDate",
+        "totalSteps",
+        "completedSteps",
+        "pendingSteps",
+        "failedSteps",
+        "steps"
+      ]
+    },
+    "NetValuePageResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NetValueRecord"
+          }
+        }
+      },
+      "title": "NetValuePageResponse",
+      "required": [
+        "total",
+        "records"
+      ]
+    },
+    "NetValueQueryRequest": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "20"
+        },
+        "startDate": {
+          "type": "string"
+        },
+        "endDate": {
+          "type": "string"
+        }
+      },
+      "title": "NetValueQueryRequest"
+    },
+    "NetValueRecord": {
+      "type": "object",
+      "properties": {
+        "productId": {
+          "type": "string"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "statDate": {
+          "type": "string"
+        },
+        "unitNetValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "cumulativeNetValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "dailyGrowthRate": {
+          "type": "number",
+          "format": "double"
+        },
+        "previousNetValue": {
+          "type": "number",
+          "format": "double"
+        },
+        "growthAmount": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "NetValueRecord",
+      "required": [
+        "productId",
+        "productName",
+        "statDate",
+        "unitNetValue",
+        "cumulativeNetValue",
+        "dailyGrowthRate",
+        "previousNetValue",
+        "growthAmount"
+      ]
+    },
+    "PageRequest": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "20"
+        }
+      },
+      "title": "PageRequest"
+    },
+    "PendingTransactionRecord": {
+      "type": "object",
+      "properties": {
+        "applicationId": {
+          "type": "string"
+        },
+        "applicationType": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "customerName": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "productName": {
+          "type": "string"
+        },
+        "applicationAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "applicationShares": {
+          "type": "number",
+          "format": "double"
+        },
+        "applicationDate": {
+          "type": "string"
+        },
+        "applicationStatus": {
+          "type": "string"
+        },
+        "riskLevel": {
+          "type": "string"
+        },
+        "productRiskLevel": {
+          "type": "string"
+        },
+        "riskMatch": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "PendingTransactionRecord",
+      "required": [
+        "applicationId",
+        "applicationType",
+        "customerId",
+        "customerName",
+        "productId",
+        "productName",
+        "applicationDate",
+        "applicationStatus",
+        "riskLevel",
+        "productRiskLevel",
+        "riskMatch"
+      ]
+    },
+    "PendingTransactionRequest": {
+      "type": "object",
+      "properties": {
+        "applicationDate": {
+          "type": "string"
+        },
+        "applicationType": {
+          "type": "string"
+        },
+        "productId": {
+          "type": "string"
+        },
+        "customerId": {
+          "type": "string"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int64",
+          "default": "1"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64",
+          "default": "50"
+        }
+      },
+      "title": "PendingTransactionRequest",
+      "required": [
+        "applicationDate"
+      ]
+    },
+    "PendingTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PendingTransactionRecord"
+          }
+        }
+      },
+      "title": "PendingTransactionResponse",
+      "required": [
+        "total",
+        "records"
+      ]
+    },
+    "QuotationUpdateRequest": {
+      "type": "object",
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "quotationDate": {
+          "type": "string"
+        },
+        "productIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updateMethod": {
+          "type": "string"
+        }
+      },
+      "title": "QuotationUpdateRequest",
+      "required": [
+        "operatorId",
+        "updateMethod"
+      ]
+    },
+    "QuotationUpdateResponse": {
+      "type": "object",
+      "properties": {
+        "quotationDate": {
+          "type": "string"
+        },
+        "updatedCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failedCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failedProducts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "logId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "QuotationUpdateResponse",
+      "required": [
+        "quotationDate",
+        "updatedCount",
+        "failedCount",
+        "failedProducts",
+        "logId"
+      ]
+    },
+    "RetryFailedTransactionRequest": {
+      "type": "object",
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "confirmationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "forceRetry": {
+          "type": "boolean",
+          "format": "boolean"
+        }
+      },
+      "title": "RetryFailedTransactionRequest",
+      "required": [
+        "operatorId",
+        "confirmationIds"
+      ]
+    },
+    "RetryFailedTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "totalRetry": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "successCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failedCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "successIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failedDetails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FailedTransactionDetail"
+          }
+        }
+      },
+      "title": "RetryFailedTransactionResponse",
+      "required": [
+        "totalRetry",
+        "successCount",
+        "failedCount",
+        "successIds",
+        "failedDetails"
+      ]
+    },
+    "TradingDayInitRequest": {
+      "type": "object",
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "forceUpdate": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "targetDate": {
+          "type": "string"
+        }
+      },
+      "title": "TradingDayInitRequest",
+      "required": [
+        "operatorId"
+      ]
+    },
+    "TradingDayInitResponse": {
+      "type": "object",
+      "properties": {
+        "previousTradingDay": {
+          "type": "string"
+        },
+        "currentTradingDay": {
+          "type": "string"
+        },
+        "nextTradingDay": {
+          "type": "string"
+        },
+        "initTime": {
+          "type": "string"
+        },
+        "logId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      },
+      "title": "TradingDayInitResponse",
+      "required": [
+        "previousTradingDay",
+        "currentTradingDay",
+        "nextTradingDay",
+        "initTime",
+        "logId"
+      ]
+    },
+    "TradingDayResponse": {
+      "type": "object",
+      "properties": {
+        "tradingDay": {
+          "type": "string"
+        },
+        "isWorkday": {
+          "type": "boolean",
+          "format": "boolean"
+        },
+        "workdayType": {
+          "type": "string"
+        },
+        "previousTradingDay": {
+          "type": "string"
+        },
+        "nextTradingDay": {
+          "type": "string"
+        }
+      },
+      "title": "TradingDayResponse",
+      "required": [
+        "tradingDay",
+        "isWorkday",
+        "workdayType",
+        "previousTradingDay",
+        "nextTradingDay"
+      ]
+    },
+    "TransactionConfirmRequest": {
+      "type": "object",
+      "properties": {
+        "operatorId": {
+          "type": "string"
+        },
+        "confirmationDate": {
+          "type": "string"
+        },
+        "applicationType": {
+          "type": "string"
+        },
+        "applicationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "batchSize": {
+          "type": "integer",
+          "format": "int64",
+          "default": "100"
+        }
+      },
+      "title": "TransactionConfirmRequest",
+      "required": [
+        "operatorId",
+        "applicationType"
+      ]
+    },
+    "TransactionConfirmResponse": {
+      "type": "object",
+      "properties": {
+        "confirmationDate": {
+          "type": "string"
+        },
+        "totalApplications": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "successCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failedCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "confirmedAmount": {
+          "type": "number",
+          "format": "double"
+        },
+        "confirmedShares": {
+          "type": "number",
+          "format": "double"
+        },
+        "totalFees": {
+          "type": "number",
+          "format": "double"
+        },
+        "confirmationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "logId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "failedApplications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FailedApplicationDetail"
+          }
+        }
+      },
+      "title": "TransactionConfirmResponse",
+      "required": [
+        "confirmationDate",
+        "totalApplications",
+        "successCount",
+        "failedCount",
+        "confirmedAmount",
+        "confirmedShares",
+        "totalFees",
+        "confirmationIds",
+        "logId",
+        "failedApplications"
+      ]
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
