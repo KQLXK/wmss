@@ -6,7 +6,6 @@ package trade
 import (
 	"WMSS/trade/api/internal/svc"
 	"WMSS/trade/api/internal/types"
-	"WMSS/trade/api/model"
 	"context"
 	"fmt"
 	"strings"
@@ -138,117 +137,139 @@ func (l *QueryTransactionsLogic) buildWhereClause(req *types.TransactionQuery) (
 
 // queryPurchaseRecords 查询申购记录
 func (l *QueryTransactionsLogic) queryPurchaseRecords(req *types.TransactionQuery, whereClause string, args []interface{}) ([]types.TransactionRecord, int64, error) {
-	baseQuery := `
-		SELECT application_id, customer_id, product_id, application_amount, 
-		       application_date, application_time, application_status, operator_id
-		FROM purchase_application
-	`
-
+	// 查询总数
 	countQuery := "SELECT COUNT(*) FROM purchase_application " + whereClause
 	var total int64
 	err := l.svcCtx.Conn.QueryRowCtx(l.ctx, &total, countQuery, args...)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("查询申购总数失败: %w", err)
 	}
 
-	query := baseQuery + whereClause + " ORDER BY application_date DESC, application_time DESC"
+	// 查询数据
+	query := `
+		SELECT 
+			application_id,
+			customer_id,
+			product_id,
+			application_amount,
+			application_date,
+			application_time,
+			application_status,
+			operator_id
+		FROM purchase_application
+	` + whereClause + " ORDER BY application_date DESC, application_time DESC"
+
+	// 添加分页
 	if req.Size > 0 {
 		query += fmt.Sprintf(" LIMIT %d OFFSET %d", req.Size, (req.Page-1)*req.Size)
 	}
 
-	var records []types.TransactionRecord
-	err = l.svcCtx.Conn.QueryRowsCtx(l.ctx, &records, query, args...)
-	if err != nil && err != sqlx.ErrNotFound {
-		return nil, 0, err
+	// 使用临时结构体接收查询结果
+	type tempPurchaseRecord struct {
+		ApplicationId     string  `db:"application_id"`
+		CustomerId        string  `db:"customer_id"`
+		ProductId         string  `db:"product_id"`
+		ApplicationAmount float64 `db:"application_amount"`
+		ApplicationDate   string  `db:"application_date"`
+		ApplicationTime   string  `db:"application_time"`
+		ApplicationStatus string  `db:"application_status"`
+		OperatorId        string  `db:"operator_id"`
 	}
 
-	// 设置交易类型为PURCHASE
-	for i := range records {
-		records[i].Type = "PURCHASE"
-		records[i].Amount = records[i].Amount // 申购金额
+	var tempRecords []tempPurchaseRecord
+	err = l.svcCtx.Conn.QueryRowsCtx(l.ctx, &tempRecords, query, args...)
+	if err != nil && err != sqlx.ErrNotFound {
+		return nil, 0, fmt.Errorf("查询申购记录失败: %w", err)
+	}
+
+	// 转换为 TransactionRecord
+	records := make([]types.TransactionRecord, len(tempRecords))
+	for i, temp := range tempRecords {
+		records[i] = types.TransactionRecord{
+			ApplicationId:   temp.ApplicationId,
+			Type:            "PURCHASE",
+			CustomerId:      temp.CustomerId,
+			ProductId:       temp.ProductId,
+			Amount:          temp.ApplicationAmount,
+			ApplicationDate: temp.ApplicationDate,
+			ApplicationTime: temp.ApplicationTime, // 只取时间部分
+			Status:          temp.ApplicationStatus,
+			OperatorId:      temp.OperatorId,
+		}
 	}
 
 	return records, total, nil
 }
 
-// queryRedemptionRecords 查询赎回记录
 func (l *QueryTransactionsLogic) queryRedemptionRecords(req *types.TransactionQuery, whereClause string, args []interface{}) ([]types.TransactionRecord, int64, error) {
-	baseQuery := `
-		SELECT application_id, customer_id, product_id, shares, 
-		       application_date, application_time, application_status, operator_id
-		FROM redemption_application
-	`
-
+	// 查询总数
 	countQuery := "SELECT COUNT(*) FROM redemption_application " + whereClause
 	var total int64
 	err := l.svcCtx.Conn.QueryRowCtx(l.ctx, &total, countQuery, args...)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, fmt.Errorf("查询赎回总数失败: %w", err)
 	}
 
-	query := baseQuery + whereClause + " ORDER BY application_date DESC, application_time DESC"
+	// 查询数据
+	query := `
+		SELECT 
+			application_id,
+			customer_id,
+			product_id,
+			application_shares,
+			application_date,
+			application_time,
+			application_status,
+			operator_id
+		FROM redemption_application
+	` + whereClause + " ORDER BY application_date DESC, application_time DESC"
+
+	// 添加分页
 	if req.Size > 0 {
 		query += fmt.Sprintf(" LIMIT %d OFFSET %d", req.Size, (req.Page-1)*req.Size)
 	}
 
-	var records []types.TransactionRecord
-	err = l.svcCtx.Conn.QueryRowsCtx(l.ctx, &records, query, args...)
-	if err != nil && err != sqlx.ErrNotFound {
-		return nil, 0, err
+	// 使用临时结构体接收查询结果
+	type tempRedemptionRecord struct {
+		ApplicationId     string  `db:"application_id"`
+		CustomerId        string  `db:"customer_id"`
+		ProductId         string  `db:"product_id"`
+		ApplicationShares float64 `db:"application_shares"`
+		ApplicationDate   string  `db:"application_date"`
+		ApplicationTime   string  `db:"application_time"`
+		ApplicationStatus string  `db:"application_status"`
+		OperatorId        string  `db:"operator_id"`
 	}
 
-	// 设置交易类型为REDEMPTION
-	for i := range records {
-		records[i].Type = "REDEMPTION"
-		records[i].Shares = records[i].Shares // 赎回份额
+	var tempRecords []tempRedemptionRecord
+	err = l.svcCtx.Conn.QueryRowsCtx(l.ctx, &tempRecords, query, args...)
+	if err != nil && err != sqlx.ErrNotFound {
+		return nil, 0, fmt.Errorf("查询赎回记录失败: %w", err)
+	}
+
+	// 转换为 TransactionRecord
+	records := make([]types.TransactionRecord, len(tempRecords))
+	for i, temp := range tempRecords {
+		records[i] = types.TransactionRecord{
+			ApplicationId:   temp.ApplicationId,
+			Type:            "REDEMPTION",
+			CustomerId:      temp.CustomerId,
+			ProductId:       temp.ProductId,
+			Shares:          temp.ApplicationShares,
+			ApplicationDate: temp.ApplicationDate,
+			ApplicationTime: temp.ApplicationTime, // 只取时间部分
+			Status:          temp.ApplicationStatus,
+			OperatorId:      temp.OperatorId,
+		}
 	}
 
 	return records, total, nil
 }
 
-// enrichRecordsWithDetails 批量获取客户和产品信息
-func (l *QueryTransactionsLogic) enrichRecordsWithDetails(records []types.TransactionRecord) ([]types.TransactionRecord, error) {
-	if len(records) == 0 {
-		return records, nil
-	}
-
-	// 获取客户ID和产品ID列表
-	customerIds := make(map[string]bool)
-	productIds := make(map[string]bool)
-	for _, record := range records {
-		customerIds[record.CustomerId] = true
-		productIds[record.ProductId] = true
-	}
-
-	// 批量查询客户信息
-	customerInfos, err := l.getCustomerInfos(l.getKeys(customerIds))
-	if err != nil {
-		return nil, err
-	}
-
-	// 批量查询产品信息
-	productInfos, err := l.getProductInfos(l.getKeys(productIds))
-	if err != nil {
-		return nil, err
-	}
-
-	// 填充详细信息
-	for i := range records {
-		if customer, ok := customerInfos[records[i].CustomerId]; ok {
-			records[i].CustomerName = customer.CustomerName
-		}
-		if product, ok := productInfos[records[i].ProductId]; ok {
-			records[i].ProductName = product.ProductName
-		}
-	}
-
-	return records, nil
-}
-
 // getCustomerInfos 批量获取客户信息
-func (l *QueryTransactionsLogic) getCustomerInfos(customerIds []string) (map[string]*model.CustomerInfo, error) {
+func (l *QueryTransactionsLogic) getCustomerInfos(customerIds []string) (map[string]string, error) {
 	if len(customerIds) == 0 {
-		return map[string]*model.CustomerInfo{}, nil
+		return map[string]string{}, nil
 	}
 
 	placeholders := strings.Repeat("?,", len(customerIds))
@@ -261,24 +282,31 @@ func (l *QueryTransactionsLogic) getCustomerInfos(customerIds []string) (map[str
 		args[i] = id
 	}
 
-	var customers []*model.CustomerInfo
-	err := l.svcCtx.Conn.QueryRowsCtx(l.ctx, &customers, query, args...)
-	if err != nil && err != sqlx.ErrNotFound {
-		return nil, err
+	// 使用自定义结构体接收结果
+	type customerResult struct {
+		CustomerId   string `db:"customer_id"`
+		CustomerName string `db:"customer_name"`
 	}
 
-	result := make(map[string]*model.CustomerInfo)
-	for _, customer := range customers {
-		result[customer.CustomerId] = customer
+	var results []customerResult
+	err := l.svcCtx.Conn.QueryRowsCtx(l.ctx, &results, query, args...)
+	if err != nil && err != sqlx.ErrNotFound {
+		return nil, fmt.Errorf("查询客户信息失败: %w", err)
+	}
+
+	// 转换为 map
+	result := make(map[string]string)
+	for _, r := range results {
+		result[r.CustomerId] = r.CustomerName
 	}
 
 	return result, nil
 }
 
 // getProductInfos 批量获取产品信息
-func (l *QueryTransactionsLogic) getProductInfos(productIds []string) (map[string]*model.ProductInfo, error) {
+func (l *QueryTransactionsLogic) getProductInfos(productIds []string) (map[string]string, error) {
 	if len(productIds) == 0 {
-		return map[string]*model.ProductInfo{}, nil
+		return map[string]string{}, nil
 	}
 
 	placeholders := strings.Repeat("?,", len(productIds))
@@ -291,18 +319,79 @@ func (l *QueryTransactionsLogic) getProductInfos(productIds []string) (map[strin
 		args[i] = id
 	}
 
-	var products []*model.ProductInfo
-	err := l.svcCtx.Conn.QueryRowsCtx(l.ctx, &products, query, args...)
-	if err != nil && err != sqlx.ErrNotFound {
-		return nil, err
+	// 使用自定义结构体接收结果
+	type productResult struct {
+		ProductId   string `db:"product_id"`
+		ProductName string `db:"product_name"`
 	}
 
-	result := make(map[string]*model.ProductInfo)
-	for _, product := range products {
-		result[product.ProductId] = product
+	var results []productResult
+	err := l.svcCtx.Conn.QueryRowsCtx(l.ctx, &results, query, args...)
+	if err != nil && err != sqlx.ErrNotFound {
+		return nil, fmt.Errorf("查询产品信息失败: %w", err)
+	}
+
+	// 转换为 map
+	result := make(map[string]string)
+	for _, r := range results {
+		result[r.ProductId] = r.ProductName
 	}
 
 	return result, nil
+}
+
+// enrichRecordsWithDetails 批量获取客户和产品信息
+func (l *QueryTransactionsLogic) enrichRecordsWithDetails(records []types.TransactionRecord) ([]types.TransactionRecord, error) {
+	if len(records) == 0 {
+		return records, nil
+	}
+
+	// 获取客户ID和产品ID列表
+	customerIds := make([]string, 0, len(records))
+	productIds := make([]string, 0, len(records))
+
+	customerSet := make(map[string]bool)
+	productSet := make(map[string]bool)
+
+	for _, record := range records {
+		if !customerSet[record.CustomerId] {
+			customerSet[record.CustomerId] = true
+			customerIds = append(customerIds, record.CustomerId)
+		}
+		if !productSet[record.ProductId] {
+			productSet[record.ProductId] = true
+			productIds = append(productIds, record.ProductId)
+		}
+	}
+
+	// 批量查询客户信息
+	customerNames, err := l.getCustomerInfos(customerIds)
+	if err != nil {
+		return nil, err
+	}
+
+	// 批量查询产品信息
+	productNames, err := l.getProductInfos(productIds)
+	if err != nil {
+		return nil, err
+	}
+
+	// 填充详细信息
+	for i := range records {
+		if name, ok := customerNames[records[i].CustomerId]; ok {
+			records[i].CustomerName = name
+		} else {
+			records[i].CustomerName = "未知客户"
+		}
+
+		if name, ok := productNames[records[i].ProductId]; ok {
+			records[i].ProductName = name
+		} else {
+			records[i].ProductName = "未知产品"
+		}
+	}
+
+	return records, nil
 }
 
 // getKeys 从map中提取键值
