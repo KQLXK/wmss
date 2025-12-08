@@ -4,11 +4,10 @@
 package logic
 
 import (
-	"context"
-	"time"
-
 	"WMSS/liquidation/api/internal/svc"
 	"WMSS/liquidation/api/internal/types"
+	"context"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -29,7 +28,7 @@ func NewGetCurrentTradingDayLogic(ctx context.Context, svcCtx *svc.ServiceContex
 
 func (l *GetCurrentTradingDayLogic) GetCurrentTradingDay() (resp *types.BaseResponse, err error) {
 	now := time.Now()
-	
+
 	// 查找当前交易日
 	currentTradingDay, err := l.svcCtx.WorkCalendarModel.FindCurrentOrNextTradingDay(l.ctx, now)
 	if err != nil {
