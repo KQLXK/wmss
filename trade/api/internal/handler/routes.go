@@ -17,8 +17,18 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/trade/cancel",
+				Handler: trade.CancelTransactionHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/trade/confirm",
 				Handler: trade.ConfirmTransactionsHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/trade/positions/summary",
+				Handler: trade.GetPositionSummaryHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,

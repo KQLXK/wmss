@@ -9,6 +9,24 @@ type BaseResponse struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+type CancelRequest struct {
+	ApplicationId   string `json:"applicationId" validate:"required"`                             // 申请编号
+	TransactionType string `json:"transactionType" validate:"required,oneof=PURCHASE REDEMPTION"` // 交易类型：PURCHASE-申购，REDEMPTION-赎回
+	OperatorId      string `json:"operatorId" validate:"required"`                                // 操作员ID
+	Reason          string `json:"reason,optional"`                                               // 撤回原因
+}
+
+type CancelResponse struct {
+	ApplicationId   string  `json:"applicationId"`           // 申请编号
+	TransactionType string  `json:"transactionType"`         // 交易类型
+	OriginalStatus  string  `json:"originalStatus"`          // 原始状态
+	NewStatus       string  `json:"newStatus"`               // 新状态
+	CancelTime      string  `json:"cancelTime"`              // 撤回时间
+	Reason          string  `json:"reason,optional"`         // 撤回原因
+	RefundAmount    float64 `json:"refundAmount,optional"`   // 退款金额（申购撤回时）
+	UnfrozenShares  float64 `json:"unfrozenShares,optional"` // 解冻份额（赎回撤回时）
+}
+
 type ConfirmRequest struct {
 	ConfirmationDate string   `json:"confirmationDate" validate:"required"`
 	OperatorId       string   `json:"operatorId" validate:"required"`
@@ -33,11 +51,27 @@ type FailedApplication struct {
 	ProductId     string `json:"productId"`
 }
 
+type GetPositionSummaryReq struct {
+	CustomerId string `json:"customerId"`
+}
+
 type PageResponse struct {
 	Total   int64       `json:"total"`
 	Records interface{} `json:"records"`
 	Page    int64       `json:"page"`
 	Size    int64       `json:"size"`
+}
+
+type PositionSummary struct {
+	CustomerId        string  `json:"customerId"`        // 客户标识
+	CustomerName      string  `json:"customerName"`      // 客户姓名
+	TotalPositions    int64   `json:"totalPositions"`    // 总持仓记录数
+	TotalProducts     int64   `json:"totalProducts"`     // 持有产品数
+	TotalCards        int64   `json:"totalCards"`        // 涉及银行卡数
+	TotalMarketValue  float64 `json:"totalMarketValue"`  // 总持仓市值
+	TotalCost         float64 `json:"totalCost"`         // 总持仓成本
+	TotalProfitLoss   float64 `json:"totalProfitLoss"`   // 总浮动盈亏
+	AvgProfitLossRate float64 `json:"avgProfitLossRate"` // 平均盈亏比例
 }
 
 type PurchaseRequest struct {

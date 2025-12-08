@@ -135,6 +135,40 @@ type (
 		Page    int64       `json:"page"`
 		Size    int64       `json:"size"`
 	}
+	// ==================== 撤回交易相关结构体 ====================
+	// 撤回交易请求
+	CancelRequest {
+		ApplicationId   string `json:"applicationId" validate:"required"` // 申请编号
+		TransactionType string `json:"transactionType" validate:"required,oneof=PURCHASE REDEMPTION"` // 交易类型：PURCHASE-申购，REDEMPTION-赎回
+		OperatorId      string `json:"operatorId" validate:"required"` // 操作员ID
+		Reason          string `json:"reason,optional"` // 撤回原因
+	}
+	// 撤回交易响应
+	CancelResponse {
+		ApplicationId   string  `json:"applicationId"` // 申请编号
+		TransactionType string  `json:"transactionType"` // 交易类型
+		OriginalStatus  string  `json:"originalStatus"` // 原始状态
+		NewStatus       string  `json:"newStatus"` // 新状态
+		CancelTime      string  `json:"cancelTime"` // 撤回时间
+		Reason          string  `json:"reason,optional"` // 撤回原因
+		RefundAmount    float64 `json:"refundAmount,optional"` // 退款金额（申购撤回时）
+		UnfrozenShares  float64 `json:"unfrozenShares,optional"` // 解冻份额（赎回撤回时）
+	}
+	GetPositionSummaryReq {
+		CustomerId string `json:"customerId"`
+	}
+	// 持仓汇总信息
+	PositionSummary {
+		CustomerId        string  `json:"customerId"` // 客户标识
+		CustomerName      string  `json:"customerName"` // 客户姓名
+		TotalPositions    int64   `json:"totalPositions"` // 总持仓记录数
+		TotalProducts     int64   `json:"totalProducts"` // 持有产品数
+		TotalCards        int64   `json:"totalCards"` // 涉及银行卡数
+		TotalMarketValue  float64 `json:"totalMarketValue"` // 总持仓市值
+		TotalCost         float64 `json:"totalCost"` // 总持仓成本
+		TotalProfitLoss   float64 `json:"totalProfitLoss"` // 总浮动盈亏
+		AvgProfitLossRate float64 `json:"avgProfitLossRate"` // 平均盈亏比例
+	}
 )
 
 @server (
@@ -172,5 +206,17 @@ service trade-api {
 	// 权限：柜台操作员、运营人员
 	@handler GetTransactionDetail
 	get /trade/transactions/:applicationId returns (BaseResponse)
+
+	// ==================== 6. 撤回交易申请 ====================
+	// 描述：撤回未确认的申购或赎回申请，必须在T+1确认前操作
+	// 权限：柜台操作员
+	@handler CancelTransaction
+	post /trade/cancel (CancelRequest) returns (BaseResponse)
+
+	// ==================== 7. 获取客户持仓汇总 ====================
+	// 描述：获取客户的持仓汇总统计信息
+	// 权限：柜台操作员、运营人员、客户本人（需鉴权）
+	@handler GetPositionSummary
+	get /trade/positions/summary (GetPositionSummaryReq) returns (BaseResponse)
 }
 
