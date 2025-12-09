@@ -217,6 +217,6 @@ service trade-api {
 	// 描述：获取客户的持仓汇总统计信息
 	// 权限：柜台操作员、运营人员、客户本人（需鉴权）
 	@handler GetPositionSummary
-	get /trade/positions/summary (GetPositionSummaryReq) returns (BaseResponse)
+	post /trade/positions/summary (GetPositionSummaryReq) returns (BaseResponse)
 }
 
