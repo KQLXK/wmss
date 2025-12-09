@@ -418,35 +418,36 @@ func (l *ConfirmTransactionsLogic) generateConfirmationId(date time.Time) (strin
 	return fmt.Sprintf("%s%05d", dateStr, seq), nil
 }
 
-// updatePositionForPurchase 更新申购持仓
 func (l *ConfirmTransactionsLogic) updatePositionForPurchase(app model.PurchaseApplication, confirmedShares float64, confirmationDate time.Time, netValue float64) error {
-	// 1. 检查是否存在持仓记录
+	// 不再检查是否存在特定日期的持仓，而是检查是否存在该客户、产品、银行卡的持仓
 	query := `
-		SELECT position_id FROM customer_position 
-		WHERE customer_id = ? AND product_id = ? AND card_id = ?
-		AND position_date = ?
-	`
+        SELECT position_id, total_shares, average_cost FROM customer_position 
+        WHERE customer_id = ? AND product_id = ? AND card_id = ?
+    `
 
-	var positionId int64
-	err := l.svcCtx.Conn.QueryRowCtx(l.ctx, &positionId, query,
-		app.CustomerId, app.ProductId, app.CardId, confirmationDate.Format("2006-01-02"))
+	// 定义一个结构体来接收查询结果
+	type PositionInfo struct {
+		PositionId  int64   `db:"position_id"`
+		TotalShares float64 `db:"total_shares"`
+		AverageCost float64 `db:"average_cost"`
+	}
 
+	var positionInfo PositionInfo
+	err := l.svcCtx.Conn.QueryRowCtx(l.ctx, &positionInfo, query, app.CustomerId, app.ProductId, app.CardId)
+
+	now := time.Now()
 	if err != nil && err != sqlx.ErrNotFound {
 		return fmt.Errorf("检查持仓失败: %w", err)
 	}
 
-	now := time.Now()
 	if err == sqlx.ErrNotFound {
 		// 创建新的持仓记录
 		insertQuery := `
-			INSERT INTO customer_position 
-			(customer_id, product_id, card_id, total_shares, available_shares, 
-			 frozen_shares, average_cost, position_date, create_time, update_time)
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		`
-
-		// 计算平均成本
-		averageCost := netValue
+            INSERT INTO customer_position 
+            (customer_id, product_id, card_id, total_shares, available_shares, 
+             frozen_shares, average_cost, create_time, update_time)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `
 
 		_, err = l.svcCtx.Conn.ExecCtx(l.ctx, insertQuery,
 			app.CustomerId,
@@ -455,8 +456,7 @@ func (l *ConfirmTransactionsLogic) updatePositionForPurchase(app model.PurchaseA
 			confirmedShares,
 			confirmedShares,
 			0.0000,
-			averageCost,
-			confirmationDate.Format("2006-01-02"),
+			netValue,
 			now,
 			now,
 		)
@@ -464,29 +464,33 @@ func (l *ConfirmTransactionsLogic) updatePositionForPurchase(app model.PurchaseA
 			return fmt.Errorf("创建持仓记录失败: %w", err)
 		}
 	} else {
-		// 更新现有持仓记录
+		// 更新现有持仓记录，重新计算平均成本
+		newTotalShares := positionInfo.TotalShares + confirmedShares
+
+		var newAverageCost float64
+		if newTotalShares > 0 {
+			newAverageCost = (positionInfo.AverageCost*positionInfo.TotalShares + netValue*confirmedShares) / newTotalShares
+		} else {
+			newAverageCost = netValue
+		}
+
 		updateQuery := `
-			UPDATE customer_position 
-			SET total_shares = total_shares + ?,
-				available_shares = available_shares + ?,
-				-- 重新计算平均成本
-				average_cost = (average_cost * total_shares + ? * ?) / (total_shares + ?),
-				update_time = ?
-			WHERE customer_id = ? AND product_id = ? AND card_id = ?
-			AND position_date = ?
-		`
+            UPDATE customer_position 
+            SET total_shares = ?,
+                available_shares = available_shares + ?,
+                average_cost = ?,
+                update_time = ?
+            WHERE customer_id = ? AND product_id = ? AND card_id = ?
+        `
 
 		_, err = l.svcCtx.Conn.ExecCtx(l.ctx, updateQuery,
+			newTotalShares,
 			confirmedShares,
-			confirmedShares,
-			netValue,
-			confirmedShares,
-			confirmedShares,
+			newAverageCost,
 			now,
 			app.CustomerId,
 			app.ProductId,
 			app.CardId,
-			confirmationDate.Format("2006-01-02"),
 		)
 		if err != nil {
 			return fmt.Errorf("更新持仓记录失败: %w", err)
@@ -499,13 +503,12 @@ func (l *ConfirmTransactionsLogic) updatePositionForPurchase(app model.PurchaseA
 // updatePositionForRedemption 更新赎回持仓
 func (l *ConfirmTransactionsLogic) updatePositionForRedemption(app model.RedemptionApplication, confirmationDate time.Time) error {
 	updateQuery := `
-		UPDATE customer_position 
-		SET total_shares = total_shares - ?,
-			frozen_shares = frozen_shares - ?,
-			update_time = NOW()
-		WHERE customer_id = ? AND product_id = ? AND card_id = ?
-		AND position_date = ?
-	`
+        UPDATE customer_position 
+        SET total_shares = total_shares - ?,
+            frozen_shares = frozen_shares - ?,
+            update_time = NOW()
+        WHERE customer_id = ? AND product_id = ? AND card_id = ?
+    `
 
 	result, err := l.svcCtx.Conn.ExecCtx(l.ctx, updateQuery,
 		app.ApplicationShares,
@@ -513,7 +516,6 @@ func (l *ConfirmTransactionsLogic) updatePositionForRedemption(app model.Redempt
 		app.CustomerId,
 		app.ProductId,
 		app.CardId,
-		confirmationDate.AddDate(0, 0, -1).Format("2006-01-02"),
 	)
 
 	if err != nil {
