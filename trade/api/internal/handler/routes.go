@@ -27,6 +27,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/trade/customer/:customerId/products",
+				Handler: trade.GetCustomerProductsHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/trade/positions/summary",
 				Handler: trade.GetPositionSummaryHandler(serverCtx),
 			},

@@ -44,11 +44,42 @@ type ConfirmResponse struct {
 	TotalFees          float64             `json:"totalFees"`
 }
 
+type CustomerProductPosition struct {
+	ProductId       string  `json:"productId"`       // 产品标识
+	ProductName     string  `json:"productName"`     // 产品名称
+	ProductType     string  `json:"productType"`     // 产品类型
+	RiskLevel       string  `json:"riskLevel"`       // 风险等级
+	ProductStatus   string  `json:"productStatus"`   // 产品状态
+	TotalShares     float64 `json:"totalShares"`     // 总持仓份额
+	AvailableShares float64 `json:"availableShares"` // 可用持仓份额
+	FrozenShares    float64 `json:"frozenShares"`    // 冻结份额
+	AverageCost     float64 `json:"averageCost"`     // 平均成本
+	LatestNetValue  float64 `json:"latestNetValue"`  // 最新净值
+	MarketValue     float64 `json:"marketValue"`     // 持仓市值
+	CostValue       float64 `json:"costValue"`       // 持仓成本
+	ProfitLoss      float64 `json:"profitLoss"`      // 浮动盈亏
+	ProfitLossRate  float64 `json:"profitLossRate"`  // 盈亏比例
+	HoldingDays     int64   `json:"holdingDays"`     // 持有天数
+}
+
+type CustomerProductsResp struct {
+	CustomerId       string                    `json:"customerId"`       // 客户标识
+	CustomerName     string                    `json:"customerName"`     // 客户姓名
+	TotalProducts    int64                     `json:"totalProducts"`    // 持有产品总数
+	TotalMarketValue float64                   `json:"totalMarketValue"` // 总持仓市值
+	TotalProfitLoss  float64                   `json:"totalProfitLoss"`  // 总浮动盈亏
+	Products         []CustomerProductPosition `json:"products"`         // 产品持仓列表
+}
+
 type FailedApplication struct {
 	ApplicationId string `json:"applicationId"`
 	ErrorReason   string `json:"errorReason"`
 	CustomerId    string `json:"customerId"`
 	ProductId     string `json:"productId"`
+}
+
+type GetCustomerProductsReq struct {
+	CustomerId string `path:"customerId"` // 客户标识
 }
 
 type GetPositionSummaryReq struct {
